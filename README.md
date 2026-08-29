@@ -1,5 +1,7 @@
 # CausalConsensus
 
+[![tests](https://github.com/Jonathan-Landmann/CausalConsensus/actions/workflows/tests.yml/badge.svg)](https://github.com/Jonathan-Landmann/CausalConsensus/actions/workflows/tests.yml)
+
 **Stability-weighted subgraph aggregation for causal discovery under distribution shift.**
 
 CausalConsensus asks a narrow research question: when a large causal graph must be reconstructed from many noisy local estimates, can bootstrap stability tell us which estimates deserve more influence?
