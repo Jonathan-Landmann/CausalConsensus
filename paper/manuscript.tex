@@ -1,0 +1,57 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,graphicx,hyperref}
+\title{Stability-Weighted Subgraph Aggregation for Causal Discovery Under Distribution Shift}
+\author{Jonathan Landmann}
+\date{Working manuscript -- results not yet peer reviewed}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Causal structure learning becomes brittle when graphs are large, samples are limited, or causal mechanisms differ across environments. We study whether the bootstrap stability of local causal estimates can serve as a reliability signal when reconstructing a global directed acyclic graph from overlapping variable subsets. We introduce a transparent stability-weighted aggregation rule, an uncertainty representation for candidate edges, and an acyclicity-constrained projection. A finite-sample analysis characterizes weighted edge voting when local errors are independent. Controlled synthetic experiments evaluate graph recovery and probability calibration under nonlinear mechanisms, heavy-tailed noise, missingness, latent confounding, and distribution shift. This manuscript describes an active research project; current results are preliminary and do not establish superiority over full-data causal discovery.
+\end{abstract}
+
+\section{Introduction}
+Large causal-discovery problems combine a super-exponential graph space with finite-sample statistical error. Divide-and-aggregate strategies reduce computational burden but introduce a new question: which local estimates should be trusted? SEA demonstrates how local causal estimates can be aggregated by a learned model~\cite{wu2025sea}; NOTEARS provides a complementary continuous-optimization view of DAG learning~\cite{zheng2018notears}. Equal voting ignores measurable differences in estimator stability. Motivated by stability selection~\cite{meinshausen2010stability}, we investigate whether bootstrap consistency can improve aggregation without requiring a learned global model.
+
+\paragraph{Contributions.}
+We propose (i) an exponential stability weight for local graph estimates, (ii) edge-level probability and entropy estimates, (iii) deterministic greedy projection to a DAG, (iv) a controlled shift benchmark, and (v) a finite-sample bound that clarifies when reliability-weighted voting can improve over equal voting.
+
+\section{Problem formulation}
+Let $G=(V,E)$ be an unknown DAG over $p$ variables. For overlapping subsets $S_k\subseteq V$, a base discovery algorithm produces local adjacency estimates $A^{(k,b)}$ across bootstrap replicates $b=1,\ldots,B$. We seek a global adjacency estimate and calibrated uncertainty for each ordered pair.
+
+\section{Method}
+Let $\bar A^{(k)}$ be the elementwise bootstrap frequency and let $\widetilde A^{(k)}=\mathbf 1\{\bar A^{(k)}\ge 1/2\}$. Define normalized disagreement
+\[
+d_k=\frac{1}{B{|S_k|\choose2}}\sum_{b=1}^B\|A^{(k,b)}-\widetilde A^{(k)}\|_1
+\quad\text{and}\quad
+w_k=e^{-\lambda d_k}.
+\]
+We aggregate an ordered edge with
+\[
+\widehat p_{ij}=\frac{\sum_{k:\{i,j\}\subseteq S_k}w_k\bar A^{(k)}_{ij}}
+{\sum_{k:\{i,j\}\subseteq S_k}w_k}.
+\]
+Edges above threshold are considered in decreasing $\widehat p_{ij}$ order and retained unless they create a directed cycle.
+
+\section{Finite-sample analysis}
+For independent local binary votes with correctness probabilities $q_k>1/2$ and deterministic weights $a_k\ge0$, Hoeffding's inequality gives
+\[
+\Pr(\widehat y\ne y)\le
+\exp\left(-\frac{(\sum_k a_k(2q_k-1))^2}{2\sum_k a_k^2}\right).
+\]
+This result does not establish that bootstrap stability recovers $q_k$; it identifies the calibration relationship that experiments must test.
+
+\section{Experimental design}
+We generate DAGs with 10--100 nodes and linear, hyperbolic-tangent, or mixed mechanisms. Environments vary noise family, mechanism scale, sample size, missingness, and latent confounding. Primary comparisons are equal subgraph aggregation and full-data estimation; PC, GES, NOTEARS, and stability-selection adapters are planned. Metrics are directed F1, structural Hamming distance, orientation error, Brier score, expected calibration error, runtime, and memory.
+
+\section{Preliminary results}
+A 45-row preliminary benchmark (five seeds, three shift strengths, 80 local subsets, and 30 bootstrap replicates) confirms the software path and provides modest evidence that weighting can improve equal aggregation, but full-data ordered regression remains stronger. These runs are diagnostic and are not sufficient for a scientific claim.
+
+\section{Limitations and next tests}
+The current estimator assumes a causal order, overlapping local estimates violate the independence analysis, stable estimators may be systematically wrong, and greedy projection is approximate. The full study must include unrestricted discovery algorithms, exact small-graph projection, overlap-aware theory, ablations over $\lambda$, and preregistered seeds.
+
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}
