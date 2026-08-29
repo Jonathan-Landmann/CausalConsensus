@@ -22,19 +22,31 @@ flowchart TD
 
 For local estimate \(A^{(k)}\), let \(d_k\) denote its normalized bootstrap disagreement. Its reliability weight is
 
-\[
-w_k=\exp(-\lambda d_k).
-\]
+$$
+w_k = \exp(-\lambda d_k).
+$$
 
-For an edge \(i\to j\), the aggregated probability is
+For an edge \(i \to j\), the aggregated probability is
 
-\[
-\widehat p_{ij}=
-\frac{\sum_{k:\{i,j\}\subseteq S_k}w_k\widehat p_{ij}^{(k)}}
-{\sum_{k:\{i,j\}\subseteq S_k}w_k}.
-\]
+For local estimate $A^{(k)}$, let $d_k$ denote its normalized bootstrap disagreement. Its reliability weight is
 
-Candidate edges are inserted in descending confidence order while rejecting cycles. The exact maximum-weight acyclic-subgraph problem is NP-hard; the implementation therefore labels its deterministic DAG projection as a greedy approximation.
+```math
+w_k = \exp(-\lambda d_k)
+```
+
+For an edge $i \to j$, the aggregated probability is
+
+```math
+\widehat{p}_{ij}
+=
+\frac{
+\sum_{k:\{i,j\}\subseteq S_k}
+w_k\,\widehat{p}_{ij}^{(k)}
+}{
+\sum_{k:\{i,j\}\subseteq S_k}
+w_k
+}
+```
 
 ## Why this is testable
 
